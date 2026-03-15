@@ -40,7 +40,10 @@
 
     <el-main class="qa-main">
       <div class="msg-list" ref="msgListRef">
-        <div v-for="message in messages" :key="message.id" class="msg-block">
+        <div v-if="messages.length === 0" class="empty-chat">
+          <el-empty description="向知识库提出您的问题吧！" :image-size="120" />
+        </div>
+        <div v-else v-for="message in messages" :key="message.id" class="msg-block">
           <div class="msg-row user-row">
             <div class="msg-bubble user-bubble">{{ message.question }}</div>
           </div>
@@ -522,7 +525,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   padding: 0;
-  background: #f7f8fa;
+  background: #fdfdfd;
 }
 
 .msg-list {
@@ -532,6 +535,13 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.empty-chat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .msg-row {
@@ -577,17 +587,19 @@ onBeforeUnmount(() => {
 }
 
 .user-bubble {
-  background: #409eff;
+  background: linear-gradient(135deg, #409eff 0%, #3a8ee6 100%);
   color: #fff;
   border-bottom-right-radius: 4px;
   white-space: pre-wrap;
+  box-shadow: 0 4px 12px rgba(64,158,255,0.2);
 }
 
 .ai-bubble {
   background: #fff;
   color: #333;
-  border: 1px solid #eee;
+  border: 1px solid #ebeef5;
   border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 :deep(.ai-bubble p) {
@@ -607,9 +619,10 @@ onBeforeUnmount(() => {
   margin-top: 10px;
   max-width: 680px;
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid #ebeef5;
   border-radius: 8px;
   padding: 12px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .refs-title {
@@ -635,11 +648,12 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 20px 24px;
   background: #fff;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #ebeef5;
   box-sizing: border-box;
-  min-height: 64px;
+  min-height: 80px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.02);
 }
 
 .input-bar {

@@ -1,15 +1,16 @@
 <template>
   <el-main class="page">
-    <el-card>
+    <el-card class="table-card" shadow="never">
       <template #header>
         <div class="card-header">
-          <span>菜单管理</span>
-          
+          <span class="page-title">菜单管理</span>
         </div>
       </template>
       <div class="toolbar">
         <div class="toolbar-left">
-          <el-input v-model="keyword" clearable placeholder="搜索名称/权限" style="width: 240px" />
+          <el-input v-model="keyword" clearable placeholder="搜索名称/权限" style="width: 280px">
+            <template #prefix><el-icon><Search /></el-icon></template>
+          </el-input>
           <el-select v-model="typeFilter" clearable placeholder="类型" style="width: 140px">
             <el-option label="目录" value="M" />
             <el-option label="菜单" value="C" />
@@ -17,13 +18,14 @@
           </el-select>
         </div>
         <div class="toolbar-actions">
-          <el-button @click="loadMenus">刷新</el-button>
-          <el-button type="primary" @click="openMenuCreate">新建菜单</el-button>
+          <el-button plain @click="loadMenus"><el-icon><Refresh /></el-icon> 刷新</el-button>
+          <el-button type="primary" @click="openMenuCreate"><el-icon><Plus /></el-icon> 新建菜单</el-button>
         </div>
       </div>
       <el-table
         :data="filteredMenus"
         border
+        stripe
         v-loading="loading"
         row-key="id"
         :tree-props="{ children: 'children' }"
@@ -105,6 +107,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Plus, Refresh, Search } from '@element-plus/icons-vue'
 import http from '../../api/http'
 
 const menuTree = ref([])
@@ -230,13 +233,25 @@ onMounted(loadMenus)
 
 <style scoped>
 .page {
-  padding: 0;
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 60px);
+}
+.table-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #303133;
 }
 .toolbar {
   display: flex;
@@ -253,5 +268,12 @@ onMounted(loadMenus)
 .toolbar-actions {
   display: flex;
   gap: 8px;
+}
+
+/* 列表与表格的基础优化 */
+:deep(.el-table th.el-table__cell) {
+  background-color: #f8f9fa !important;
+  color: #606266;
+  font-weight: 700;
 }
 </style>

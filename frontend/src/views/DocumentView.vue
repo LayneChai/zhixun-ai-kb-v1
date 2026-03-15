@@ -1,15 +1,17 @@
 <template>
   <div class="doc-page">
     <div class="page-header">
-      <h2>文档管理</h2>
+      <h2 class="page-title">文档管理</h2>
       <div class="header-actions">
         <!-- 知识库选择器 -->
-        <el-select v-model="selectedDatasetId" placeholder="选择知识库" style="width:200px;margin-right:12px"
-          @change="load" clearable>
+        <el-select v-model="selectedDatasetId" placeholder="选择知识库" style="width:220px;margin-right:16px"
+          @change="load" clearable size="large">
           <el-option v-for="ds in datasets" :key="ds.id" :label="ds.name" :value="ds.id" />
         </el-select>
         <el-upload :http-request="upload" :show-file-list="false" :disabled="!selectedDatasetId">
-          <el-button type="primary" :disabled="!selectedDatasetId">⬆ 上传文档</el-button>
+          <el-button type="primary" size="large" :disabled="!selectedDatasetId">
+            <el-icon><Upload /></el-icon> 上传文档
+          </el-button>
         </el-upload>
       </div>
     </div>
@@ -30,32 +32,39 @@
       </el-alert>
     </div>
     <el-empty v-else-if="!selectedDatasetId" description="请选择知识库以查看文档" />
-    <el-table v-else :data="rows" style="margin-top:12px" border stripe>
-      <el-table-column prop="id" label="ID" width="80" />
-      <el-table-column prop="filename" label="文件名" />
-      <el-table-column prop="fileType" label="类型" width="160" />
-      <el-table-column prop="status" label="状态" width="120">
-        <template #default="scope">
-          <el-tag :type="statusType(scope.row.status)" size="small">
-            {{ statusText(scope.row.status) }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="createdAt" label="上传时间" width="180" />
-      <el-table-column label="操作" width="260">
-        <template #default="scope">
-          <el-button size="small" type="primary" plain @click="parse(scope.row.id)">解析切片</el-button>
-          <el-button size="small" plain @click="reindex(scope.row.id)">重建索引</el-button>
-          <el-button size="small" type="danger"  plain @click="remove(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card v-else class="table-card" shadow="never">
+      <el-table :data="rows" style="width: 100%" border stripe>
+        <el-table-column prop="id" label="ID" width="80" align="center" />
+        <el-table-column prop="filename" label="文件名">
+          <template #default="scope">
+            <span class="doc-name">{{ scope.row.filename }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="fileType" label="类型" width="120" align="center" />
+        <el-table-column prop="status" label="状态" width="120" align="center">
+          <template #default="scope">
+            <el-tag :type="statusType(scope.row.status)" size="small" effect="dark">
+              {{ statusText(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="createdAt" label="上传时间" width="180" align="center" />
+        <el-table-column label="操作" width="280" fixed="right">
+          <template #default="scope">
+            <el-button size="small" type="primary" plain @click="parse(scope.row.id)">解析切片</el-button>
+            <el-button size="small" type="success" plain @click="reindex(scope.row.id)">重建索引</el-button>
+            <el-button size="small" type="danger"  plain @click="remove(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Upload } from '@element-plus/icons-vue'
 import http from '../api/http'
 
 const rows              = ref([])
@@ -157,13 +166,46 @@ onMounted(loadDatasets)
 </script>
 
 <style scoped>
-.doc-page { width: 100%; max-width: 1600px; margin: 0 auto; }
+.doc-page { 
+  width: 100%; 
+  max-width: 1600px; 
+  margin: 0 auto; 
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+}
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+.page-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #303133;
 }
 .header-actions { display: flex; align-items: center; }
+
+.table-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+.doc-name {
+  font-weight: 500;
+  color: #303133;
+}
+
 .empty-prompt { padding: 40px; text-align: center; }
+
+/* 列表与表格的基础优化 */
+:deep(.el-table th.el-table__cell) {
+  background-color: #f8f9fa !important;
+  color: #606266;
+  font-weight: 700;
+}
 </style>

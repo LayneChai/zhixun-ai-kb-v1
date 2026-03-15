@@ -1,42 +1,41 @@
 <template>
   <el-main class="page">
-    <el-card>
+    <el-card class="table-card" shadow="never">
       <template #header>
         <div class="card-header">
-          <span>用户列表</span>
-          
+          <span class="page-title">用户列表</span>
         </div>
       </template>
       <div class="toolbar">
-        <el-input v-model="keyword" clearable placeholder="搜索用户名" style="width: 240px" />
+        <el-input v-model="keyword" clearable placeholder="搜索用户名" style="width: 280px" >
+          <template #prefix><el-icon><Search /></el-icon></template>
+        </el-input>
         <div class="toolbar-actions">
-          <el-button @click="loadUsers">刷新</el-button>
-          <el-button type="primary" v-perm="'system:user:add'" @click="openUserCreate">新建用户</el-button>
+          <el-button plain @click="loadUsers"><el-icon><Refresh /></el-icon> 刷新</el-button>
+          <el-button type="primary" v-perm="'system:user:add'" @click="openUserCreate">
+            <el-icon><Plus /></el-icon> 新建用户
+          </el-button>
         </div>
       </div>
-      <el-table :data="filteredUsers" border v-loading="loading">
-        <el-table-column prop="id" label="ID" width="80" />
+      <el-table :data="filteredUsers" border stripe v-loading="loading">
+        <el-table-column prop="id" label="ID" width="80" align="center" />
         <el-table-column prop="username" label="用户名" min-width="160" />
         <el-table-column label="角色" min-width="200">
           <template #default="{ row }">
-            <el-tag v-for="role in (row.roleNames || [])" :key="role" class="tag-item">{{ role }}</el-tag>
+            <el-tag v-for="role in (row.roleNames || [])" :key="role" class="tag-item" effect="light">{{ role }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="120">
+        <el-table-column label="状态" width="120" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+            <el-tag :type="row.status === 1 ? 'success' : 'danger'" effect="dark">
               {{ row.status === 1 ? decodeURIComponent('%E6%AD%A3%E5%B8%B8') : decodeURIComponent('%E7%A6%81%E7%94%A8') }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" v-perm="'system:user:edit'" @click="openUserEdit(row)">
-              编辑
-            </el-button>
-            <el-button link type="danger" v-perm="'system:user:delete'" @click="deleteUser(row)">
-              删除
-            </el-button>
+            <el-button link type="primary" v-perm="'system:user:edit'" @click="openUserEdit(row)">编辑</el-button>
+            <el-button link type="danger" v-perm="'system:user:delete'" @click="deleteUser(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -73,6 +72,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Plus, Refresh, Search } from '@element-plus/icons-vue'
 import http from '../../api/http'
 
 const users = ref([])
@@ -191,13 +191,26 @@ onMounted(async () => {
 
 <style scoped>
 .page {
-  padding: 0;
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 60px);
+}
+
+.table-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #303133;
 }
 
 .tag-item {
@@ -207,11 +220,18 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .toolbar-actions {
   display: flex;
   gap: 8px;
+}
+
+/* 列表与表格的基础优化 */
+:deep(.el-table th.el-table__cell) {
+  background-color: #f8f9fa !important;
+  color: #606266;
+  font-weight: 700;
 }
 </style>

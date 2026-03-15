@@ -1,31 +1,40 @@
 <template>
-  <el-main>
-    <h3>知识库管理</h3>
-    <el-button type="primary" @click="openCreateDialog">新增</el-button>
-    <el-table :data="rows" style="margin-top:12px">
-      <el-table-column prop="id" label="ID" width="80"/>
-      <el-table-column prop="name" label="名称">
-        <template #default="scope">
-          {{ scope.row.name }}
-          <el-tag v-if="scope.row.isDefault === 1" size="small" type="success" style="margin-left:8px">默认</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="description" label="描述"/>
-      <el-table-column prop="status" label="状态">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status === 1" type="success" size="small">启用</el-tag>
-          <el-tag v-else type="danger" size="small">停用</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="420">
-        <template #default="scope">
-          <el-button size="small" @click="editDataset(scope.row)">编辑</el-button>
-          <el-button size="small" @click="toggle(scope.row)">{{ scope.row.status === 1 ? '停用' : '启用' }}</el-button>
-          <el-button size="small" type="primary" @click="showContent(scope.row)">查看内容</el-button>
-          <el-button size="small" type="danger" @click="remove(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <el-main class="dataset-page">
+    <div class="page-header">
+      <h3 class="page-title">知识库管理</h3>
+      <el-button type="primary" @click="openCreateDialog">
+        <el-icon><Plus /></el-icon> 新增知识库
+      </el-button>
+    </div>
+    
+    <el-card class="table-card" shadow="never">
+      <el-table :data="rows" style="width: 100%" border stripe>
+        <el-table-column prop="id" label="ID" width="80" align="center"/>
+        <el-table-column prop="name" label="名称">
+          <template #default="scope">
+            <span class="ds-name">{{ scope.row.name }}</span>
+            <el-tag v-if="scope.row.isDefault === 1" size="small" type="success" style="margin-left:8px" effect="light">默认</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="description" label="描述" show-overflow-tooltip/>
+        <el-table-column prop="status" label="状态" width="100" align="center">
+          <template #default="scope">
+            <el-tag v-if="scope.row.status === 1" type="success" size="small" effect="dark">启用</el-tag>
+            <el-tag v-else type="danger" size="small" effect="dark">停用</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="380" fixed="right">
+          <template #default="scope">
+            <el-button size="small" plain @click="editDataset(scope.row)">编辑</el-button>
+            <el-button size="small" :type="scope.row.status === 1 ? 'warning' : 'success'" plain @click="toggle(scope.row)">
+              {{ scope.row.status === 1 ? '停用' : '启用' }}
+            </el-button>
+            <el-button size="small" type="primary" plain @click="showContent(scope.row)">查看内容</el-button>
+            <el-button size="small" type="danger" plain @click="remove(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
 
     <el-dialog v-model="editVisible" title="编辑知识库" width="520px">
       <el-form label-width="80px">
@@ -80,6 +89,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Plus } from '@element-plus/icons-vue'
 import http from '../api/http'
 
 const rows = ref([])
@@ -154,3 +164,37 @@ const showContent = async (row) => {
 
 onMounted(load)
 </script>
+<style scoped>
+.dataset-page {
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 60px);
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.page-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #303133;
+}
+.table-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+.ds-name {
+  font-weight: 600;
+  color: #409EFF;
+}
+/* 列表与表格的基础优化 */
+:deep(.el-table th.el-table__cell) {
+  background-color: #f8f9fa !important;
+  color: #606266;
+  font-weight: 700;
+}
+</style>

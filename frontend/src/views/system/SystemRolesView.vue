@@ -2,39 +2,36 @@
   <el-main class="page">
     <el-row :gutter="19">
       <el-col :span="14">
-        <el-card>
+        <el-card class="table-card" shadow="never">
           <template #header>
             <div class="card-header">
-              <span>角色管理</span>
-              
+              <span class="page-title">角色管理</span>
             </div>
           </template>
           <div class="toolbar">
-            <el-input v-model="keyword" clearable placeholder="搜索角色名/标识" style="width: 240px" />
+            <el-input v-model="keyword" clearable placeholder="搜索角色名/标识" style="width: 280px">
+              <template #prefix><el-icon><Search /></el-icon></template>
+            </el-input>
             <div class="toolbar-actions">
-              <el-button @click="loadRoles">刷新</el-button>
-              <el-button type="primary" v-perm="'system:role:add'" @click="openRoleCreate">新建角色</el-button>
+              <el-button plain @click="loadRoles"><el-icon><Refresh /></el-icon> 刷新</el-button>
+              <el-button type="primary" v-perm="'system:role:add'" @click="openRoleCreate"><el-icon><Plus /></el-icon> 新建角色</el-button>
             </div>
           </div>
-          <el-table :data="filteredRoles" border v-loading="loading" @row-click="selectRole" style="width: 100%">
-            <el-table-column prop="id" label="ID" width="80" />
+          <el-table :data="filteredRoles" border stripe v-loading="loading" @row-click="selectRole" style="width: 100%" highlight-current-row>
+            <el-table-column prop="id" label="ID" width="80" align="center" />
             <el-table-column prop="roleName" label="角色名" min-width="140" />
             <el-table-column prop="roleKey" label="角色标识" min-width="140" />
-            <el-table-column label="状态" width="100">
+            <el-table-column label="状态" width="100" align="center">
               <template #default="{ row }">
-                <el-tag :type="row.status === '0' ? 'success' : 'danger'">
+                <el-tag :type="row.status === '0' ? 'success' : 'danger'" effect="dark">
                   {{ row.status === '0' ? decodeURIComponent('%E6%AD%A3%E5%B8%B8') : decodeURIComponent('%E7%A6%81%E7%94%A8') }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="120" fixed="right">
+            <el-table-column label="操作" width="140" fixed="right">
               <template #default="{ row }">
-                <el-button link type="primary" v-perm="'system:role:edit'" @click.stop="openRoleEdit(row)">
-                  编辑
-                </el-button>
-                <el-button link type="danger" v-perm="'system:role:delete'" @click.stop="deleteRole(row)">
-                  删除
-                </el-button>
+                <el-button link type="primary" v-perm="'system:role:edit'" @click.stop="openRoleEdit(row)">编辑</el-button>
+                <el-button link type="danger" v-perm="'system:role:delete'" @click.stop="deleteRole(row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -42,10 +39,10 @@
       </el-col>
 
       <el-col :span="10">
-        <el-card>
+        <el-card class="table-card" shadow="never">
           <template #header>
             <div class="card-header">
-              <span>角色菜单授权</span>
+              <span class="page-title">角色菜单授权</span>
               <el-button type="primary" v-perm="'system:role:grant'" :disabled="!selectedRoleId" @click="saveRoleMenus">
                 保存授权
               </el-button>
@@ -53,7 +50,7 @@
           </template>
           <div class="role-tip">
             当前角色:
-            <el-tag type="info">{{ selectedRoleName || decodeURIComponent('%E6%9C%AA%E9%80%89%E6%8B%A9') }}</el-tag>
+            <el-tag type="info" size="large" effect="light">{{ selectedRoleName || decodeURIComponent('%E6%9C%AA%E9%80%89%E6%8B%A9') }}</el-tag>
           </div>
           <el-tree
             ref="menuTreeRef"
@@ -93,6 +90,7 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Plus, Refresh, Search } from '@element-plus/icons-vue'
 import http from '../../api/http'
 
 const roles = ref([])
@@ -240,17 +238,29 @@ onMounted(async () => {
 
 <style scoped>
 .page {
-  padding: 0;
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 60px);
 }
-
+.table-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+}
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #303133;
+}
 .role-tip {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 :deep(.el-table__header-wrapper),
@@ -292,11 +302,9 @@ onMounted(async () => {
   overflow: hidden !important;
 }
 
-:deep(.el-table__body-wrapper) {
-  overflow-x: hidden !important;
-}
-
-:deep(.el-table__inner-wrapper::before) {
-  display: none;
+:deep(.el-table th.el-table__cell) {
+  background-color: #f8f9fa !important;
+  color: #606266;
+  font-weight: 700;
 }
 </style>
