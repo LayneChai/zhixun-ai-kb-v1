@@ -146,6 +146,10 @@ SELECT 3, 1, 'Role Management', '/system/permission', 'views/PermissionManage', 
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE id = 3);
 
 INSERT INTO sys_menu(id, parent_id, menu_name, path, component, perms, icon, menu_type, sort, status)
+SELECT 4, 1, 'Operation Logs', '/system/logs', 'views/OperationLogs', 'system:log:list', 'List', 'C', 3, '0'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE id = 4);
+
+INSERT INTO sys_menu(id, parent_id, menu_name, path, component, perms, icon, menu_type, sort, status)
 SELECT 11, 1, 'User Add', '', NULL, 'system:user:add', '#', 'F', 11, '0'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE id = 11);
 
@@ -160,3 +164,7 @@ WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE id = 13);
 INSERT INTO sys_menu(id, parent_id, menu_name, path, component, perms, icon, menu_type, sort, status)
 SELECT 14, 1, 'User Grant', '', NULL, 'system:user:grant', '#', 'F', 14, '0'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE id = 14);
+
+INSERT INTO sys_role_menu(role_id, menu_id)
+SELECT 1, 4
+WHERE NOT EXISTS (SELECT 1 FROM sys_role_menu WHERE role_id = 1 AND menu_id = 4);

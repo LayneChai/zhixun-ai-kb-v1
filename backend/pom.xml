@@ -4,7 +4,7 @@
     <groupId>com.zhixun</groupId>
     <artifactId>ai-kb-backend</artifactId>
     <version>1.0.0</version>
-    <name>智询AI知识库问答系统V1.0</name>
+    <name>智询知识库问答系统V1.0</name>
     <description>软著版后端</description>
 
     <parent>

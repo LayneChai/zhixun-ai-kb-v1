@@ -5,11 +5,16 @@ import com.zhixun.kb.mapper.SysMenuMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class StpInterfaceImpl implements StpInterface {
+
+    private static final List<String> ADMIN_EXTRA_PERMS = List.of("system:log:list");
 
     private final SysMenuMapper sysMenuMapper;
 
@@ -18,7 +23,9 @@ public class StpInterfaceImpl implements StpInterface {
         Long userId = Long.parseLong(loginId.toString());
         List<String> roleKeys = sysMenuMapper.selectRoleKeysByUserId(userId);
         if (roleKeys.contains("admin") || roleKeys.contains("super-admin")) {
-            return sysMenuMapper.selectAllPerms();
+            Set<String> perms = new LinkedHashSet<>(sysMenuMapper.selectAllPerms());
+            perms.addAll(ADMIN_EXTRA_PERMS);
+            return new ArrayList<>(perms);
         }
         return sysMenuMapper.selectPermsByUserId(userId);
     }

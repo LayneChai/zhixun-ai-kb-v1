@@ -3,12 +3,16 @@ package com.zhixun.kb.config;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class SaTokenConfigure implements WebMvcConfigurer {
+
+    private final OperationLogInterceptor operationLogInterceptor;
 
     // 注册 Sa-Token 拦截器
     @Override
@@ -26,5 +30,10 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                             "/webjars/**")
                     .check(r -> StpUtil.checkLogin());
         })).addPathPatterns("/**");
+
+        registry.addInterceptor(operationLogInterceptor)
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**",
+                        "/webjars/**");
     }
 }
