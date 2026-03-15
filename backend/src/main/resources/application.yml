@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+  # Redis 配置选项
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: "zsqt"
+      database: 0
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/zhixun_kb?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: chaiyinlei
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: false
+  jwt-secret-key: "zhixun-ai-kb-super-secret-key-1234567890"
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+llm:
+  base-url: https://ai.td.ee/v1
+  api-key: sk-4a9b530fde05a5542ea9fa40190cafebd2d4477ddb1b9ccd28f5b93c1c535309
+  model: gpt-5.2
+
+app:
+  crypto:
+    rsa-private-key: "fake-private-key-for-dev"
+  upload-dir: ./data/uploads
+  bm25:
+    k1: 1.5
+    b: 0.75
+    top-k: 5
+
+justauth:
+  enabled: true
+  type:
+    wechat_open:
+      client-id: xxxx
+      client-secret: xxxx
+      redirect-uri: http://localhost:8080/api/oauth/callback/wechat_open
+    dingtalk:
+      client-id: yyyy
+      client-secret: yyyy
+      redirect-uri: http://localhost:8080/api/oauth/callback/dingtalk
