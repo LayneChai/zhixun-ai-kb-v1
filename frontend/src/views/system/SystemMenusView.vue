@@ -43,10 +43,10 @@
             <el-button link type="primary" @click="openMenuCreate(row)">
               新增
             </el-button>
-            <el-button link type="primary" v-perm="'system:menu:edit'" @click="openMenuEdit(row)">
+            <el-button link type="primary" @click="openMenuEdit(row)">
               编辑
             </el-button>
-            <el-button link type="danger" v-perm="'system:menu:delete'" @click="deleteMenu(row)">
+            <el-button link type="danger" @click="deleteMenu(row)">
               删除
             </el-button>
           </template>
