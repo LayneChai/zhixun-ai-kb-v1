@@ -44,8 +44,8 @@ springdoc:
     path: /swagger-ui.html
 
 llm:
-  base-url: https://ai.td.ee/v1
-  api-key: sk-4a9b530fde05a5542ea9fa40190cafebd2d4477ddb1b9ccd28f5b93c1c535309
+  base-url: 请求的大模型地址
+  api-key: 你的apikey
   model: gpt-5.2
 
 app:
