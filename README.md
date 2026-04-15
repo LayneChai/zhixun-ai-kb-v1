@@ -74,6 +74,3 @@ cd frontend
 npm install
 npm run dev
 ```
-
-## 7. 软著材料建议
-见 `docs/softcopyright-material.md`
